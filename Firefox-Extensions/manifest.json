@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Description Summary",
+  "version": "1.0",
+  "description": "Adds a summary after the YouTube description box.",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:5000/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/watch*"
+      ],
+      "js": [
+        "dist/content.bundle.js"
+      ],
+      "css": [
+        "styles/styles.css"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+/* styles.css */
+
+/* Container for the summary box */
+.custom-summary-box {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: #f9f9f9; /* Light background similar to YouTube's description */
+    border-left: 4px solid #ff0000; /* Red border to match YouTube's accent color */
+    border-radius: 4px;
+    font-family: Roboto, Arial, sans-serif; /* YouTube's primary font */
+    color: #000; /* Black text color */
+    transition: all 0.3s ease; /* Smooth transition for toggle */
+    cursor: pointer; /* Indicate that the box is clickable */
+}
+
+/* Focus state for accessibility */
+.custom-summary-box:focus {
+    outline: 2px solid #065fd4; /* Visible focus outline */
+}
+
+/* Title of the summary */
+.custom-summary-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #ff0000; /* Red color for the title */
+}
+
+.custom-summary-box .toggle-indicator {
+    color: #ff0000 !important; /* Add !important to force the red color */
+    text-decoration: none !important; /* Ensure no underline */
+}
+
+/* Summary text */
+.custom-summary-box .summary-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    max-height: 60px; /* Adjust based on desired truncated height */
+    overflow: hidden;
+}
+
+/* Expanded summary text */
+.custom-summary-box.expanded .summary-text {
+    max-height: 10000px; /* Arbitrary large value to accommodate full text */
+}
+
+/* Toggle indicator styles */
+.custom-summary-box .toggle-indicator {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #065fd4; /* YouTube's link color */
+    text-decoration: underline;
+}
+
+/* Loading spinner styles */
+.custom-summary-box .loading-spinner {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #ff0000; /* Red */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+    margin: 12px;
+}
+
+/* Adjust the margin and padding for list items inside the summary text */
+.summary-text ul {
+    list-style-type: disc;
+    margin: 12px 0; /* Adds more vertical space between lists */
+    padding-left: 30px; /* Increased indentation */
+}
+
+/* Styling for nested lists for more clarity */
+.summary-text ul ul {
+    list-style-type: circle;
+    margin-left: 20px;
+    padding-left: 20px;
+}
+
+/* Adjust margin between paragraphs and other block elements */
+.summary-text * {
+    margin-bottom: 8px; /* Ensure consistent space between paragraphs, headings, and lists */
+}
+
+/* Spinner animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+    .custom-summary-box {
+        background-color: #181818; /* Dark background */
+        border-left: 4px solid #ff0000; /* Maintain red border */
+        color: #e0e0e0; /* Light text color */
+    }
+
+    .custom-summary-box h3 {
+        color: #ff0000; /* Red color for the title */
+    }
+
+    .custom-summary-box .summary-text {
+        color: #e0e0e0; /* Light text color */
+        background-color: #181818;
+    }
+
+    .custom-summary-box:focus {
+        outline: 2px solid #ff0000; /* Change focus outline color in dark mode */
+    }
+
+    .custom-summary-box .loading-spinner {
+        border: 4px solid #3a3a3a; /* Dark grey */
+        border-top: 4px solid #ff0000; /* Red */
+    }
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 600px) {
+    .custom-summary-box {
+        padding: 12px;
+        margin-top: 16px;
+    }
+
+    .custom-summary-box h3 {
+        font-size: 14px;
+    }
+
+    .custom-summary-box .summary-text {
+        font-size: 12px;
+        max-height: 50px;
+    }
+
+    .custom-summary-box .toggle-indicator {
+        font-size: 12px;
+    }
+
+    .custom-summary-box .loading-spinner {
+        width: 20px;
+        height: 20px;
+        border-width: 3px;
+    }
+
+    /* Ensure lists and bold text are styled appropriately */
+    .custom-summary-box .summary-text ul {
+        padding-left: 20px;
+    }
+
+    .custom-summary-box .summary-text li {
+        margin-bottom: 5px;
+    }
+
+    .custom-summary-box .summary-text strong {
+        font-weight: bold;
+    }
+}
