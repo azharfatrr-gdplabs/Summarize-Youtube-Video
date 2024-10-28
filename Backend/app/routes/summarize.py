@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request, jsonify
 from ..services.transcript_service import fetch_transcript
-from ..services.summarization_service import summarize_text
+from ..services.gemini_summarization_service import summarize_text
 from ..utils.sanitize import sanitize_transcript
 
 summarize_bp = Blueprint('summarize', __name__)

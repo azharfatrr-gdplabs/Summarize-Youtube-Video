@@ -1,13 +1,8 @@
-# app/services/summarization_service.py
-
 import requests
 import logging
-import os
 from flask import current_app
 from ..errors import SafetyException, SummarizationException
 from ..utils.prompt_engineering import generate_summary_prompt
-
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 def summarize_text(transcript, summary_length="complete"):
@@ -21,7 +16,9 @@ def summarize_text(transcript, summary_length="complete"):
     Returns:
         str: The summarized text.
     """
-    gemini_url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={current_app.config["GEMINI_API_KEY"]}'
+    # Use GEMINI_API_KEY from the Flask app config
+    gemini_api_key = current_app.config["GEMINI_API_KEY"]
+    gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_api_key}"
 
     # Generate the prompt using the utility function
     prompt = generate_summary_prompt(transcript, summary_length)

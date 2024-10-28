@@ -6,8 +6,7 @@ from .config import Config
 from .routes.summarize import summarize_bp
 from .errors import register_error_handlers
 import logging
-from logging.handlers import RotatingFileHandler
-import os
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -15,11 +14,9 @@ def create_app(config_class=Config):
 
     # Debug: Print CORS_ALLOWED_ORIGINS
     print(f"CORS_ALLOWED_ORIGINS: {app.config['CORS_ALLOWED_ORIGINS']}")
-    
+
     # Initialize Extensions
-    CORS(
-        app, resources={r"/*": {"origins": "*"}}
-    )
+    CORS(app, resources={r"/*": {"origins": app.config["CORS_ALLOWED_ORIGINS"]}})
 
     # Register Blueprints
     app.register_blueprint(summarize_bp, url_prefix="/summarize")
