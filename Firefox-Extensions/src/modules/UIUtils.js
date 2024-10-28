@@ -5,6 +5,25 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 export default class UIUtils {
+  // Define constants for DOM IDs
+  static DOM_IDS = {
+    SUMMARY_BOX: 'custom-summary-box',
+    LOADING_SPINNER: 'loading-spinner',
+    SUMMARY_TEXT: 'summary-text',
+    TOGGLE_INDICATOR: 'toggle-indicator',
+    SUMMARY_HEADER: 'summary-header', // Optional: For customizable header text
+    // Add more IDs as necessary
+  };
+
+  // Define constants for CSS class names
+  static CSS_CLASSES = {
+    SUMMARY_BOX: 'custom-summary-box', // For styling
+    LOADING_SPINNER: 'loading-spinner', // For spinner styling
+    SUMMARY_TEXT: 'summary-text', // For summary text styling
+    TOGGLE_INDICATOR: 'toggle-indicator', // For toggle arrow styling
+    // Add more classes as necessary
+  };
+
   /**
    * Generates a truncated version of the summary.
    * @param {string} summary - The full summary text.
@@ -21,23 +40,24 @@ export default class UIUtils {
    */
   static createSummaryContainer() {
     const container = document.createElement('div');
-    container.id = 'custom-summary-box';
-    container.classList.add('custom-summary-box'); // For styling
+    container.id = UIUtils.DOM_IDS.SUMMARY_BOX;
+    container.classList.add(UIUtils.CSS_CLASSES.SUMMARY_BOX); // For styling
     container.setAttribute('role', 'button'); // Accessibility
     container.setAttribute('tabindex', '0'); // Make focusable
     container.setAttribute('aria-expanded', 'false'); // Accessibility state
+    container.setAttribute('aria-label', 'YouTube Summary Box'); // Enhanced Accessibility
     container.innerHTML = `
-      <h3>Summary</h3>
-      <div class="loading-spinner"></div>
-      <div class="summary-text" style="display: none;"></div>
-      <div class="toggle-indicator" style="display: none;"></div>
+      <h3 id="${UIUtils.DOM_IDS.SUMMARY_HEADER}">Summary</h3>
+      <div id="${UIUtils.DOM_IDS.LOADING_SPINNER}" class="${UIUtils.CSS_CLASSES.LOADING_SPINNER}"></div>
+      <div id="${UIUtils.DOM_IDS.SUMMARY_TEXT}" class="${UIUtils.CSS_CLASSES.SUMMARY_TEXT}" style="display: none;"></div>
+      <div id="${UIUtils.DOM_IDS.TOGGLE_INDICATOR}" class="${UIUtils.CSS_CLASSES.TOGGLE_INDICATOR}" style="display: none;" aria-label="Toggle Summary"></div>
     `;
     return container;
   }
 
   /**
    * Inserts the summary container into the DOM after the specified element.
-   * @param {HTMLElement} bottomRowElement - The summary container element.
+   * @param {HTMLElement} bottomRowElement - The reference element after which the summary container will be inserted.
    * @returns {HTMLElement|null} - The inserted summary container or null if insertion fails.
    */
   static insertSummaryContainer(bottomRowElement) {
@@ -58,9 +78,9 @@ export default class UIUtils {
    * @param {string} fullSummary - The full summary text in Markdown.
    */
   static async updateSummary(container, fullSummary) {
-    const summaryTextElement = container.querySelector('.summary-text');
-    const toggleIndicator = container.querySelector('.toggle-indicator');
-    const loadingSpinner = container.querySelector('.loading-spinner');
+    const summaryTextElement = container.querySelector(`#${UIUtils.DOM_IDS.SUMMARY_TEXT}`);
+    const toggleIndicator = container.querySelector(`#${UIUtils.DOM_IDS.TOGGLE_INDICATOR}`);
+    const loadingSpinner = container.querySelector(`#${UIUtils.DOM_IDS.LOADING_SPINNER}`);
 
     const truncatedSummary = UIUtils.generateTruncatedSummary(fullSummary);
 
@@ -93,6 +113,26 @@ export default class UIUtils {
       summaryTextElement.textContent = 'Error rendering summary.';
       summaryTextElement.style.display = 'block';
     }
+  }
+
+  /**
+   * Handles API failure by updating the summary container with an error message.
+   * @param {HTMLElement} container - The summary container element.
+   */
+  static handleSummaryFailure(container) {
+    const summaryTextElement = container.querySelector(`#${UIUtils.DOM_IDS.SUMMARY_TEXT}`);
+    const loadingSpinner = container.querySelector(`#${UIUtils.DOM_IDS.LOADING_SPINNER}`);
+
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'none';
+    }
+
+    if (summaryTextElement) {
+      summaryTextElement.textContent = 'Unable to generate summary.';
+      summaryTextElement.style.display = 'block';
+    }
+
+    Logger.warn('API failed to fetch summary. Displayed error message in summary box.');
   }
 
   /**
@@ -135,7 +175,7 @@ export default class UIUtils {
    * Removes the existing summary container if present.
    */
   static removeSummaryContainer() {
-    const existingContainer = document.getElementById('custom-summary-box');
+    const existingContainer = document.getElementById(UIUtils.DOM_IDS.SUMMARY_BOX);
     if (existingContainer) {
       existingContainer.remove();
       Logger.log('Existing summary container removed.');

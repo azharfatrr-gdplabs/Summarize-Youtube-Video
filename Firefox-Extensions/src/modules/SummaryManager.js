@@ -6,7 +6,13 @@ import APIUtils from './APIUtils.js';
 import UIUtils from './UIUtils.js';
 
 export default class SummaryManager {
-  constructor () {
+  // Define constants for selectors
+  static SELECTORS = {
+    BOTTOM_ROW: '#bottom-row',
+    // Add more selectors here if needed in the future
+  };
+
+  constructor() {
     this.debounceTimer = null;
     this.debounceInterval = 500; // 500ms
   }
@@ -15,12 +21,16 @@ export default class SummaryManager {
    * Inserts the summary box into the YouTube page with debouncing.
    */
   async insertSummary() {
+    // Clear any existing debounce timer
     clearTimeout(this.debounceTimer);
+
+    // Set a new debounce timer
     this.debounceTimer = setTimeout(async () => {
-      const bottomRowSelector = '#bottom-row';
+      const { BOTTOM_ROW } = SummaryManager.SELECTORS;
 
       try {
-        const bottomRowElement = await DOMUtils.waitForElement(bottomRowSelector, 30);
+        // Wait for the bottom row element to appear in the DOM
+        const bottomRowElement = await DOMUtils.waitForElement(BOTTOM_ROW, 30);
         const videoID = DOMUtils.getVideoID();
 
         if (!videoID) {
@@ -44,17 +54,14 @@ export default class SummaryManager {
         const fullSummary = await APIUtils.fetchSummary(videoID);
 
         if (fullSummary) {
+          // Update the summary container with the fetched summary
           await UIUtils.updateSummary(summaryContainer, fullSummary);
         } else {
-          // Handle API failure
-          const summaryTextElement = summaryContainer.querySelector('.summary-text');
-          const loadingSpinner = summaryContainer.querySelector('.loading-spinner');
-          loadingSpinner.style.display = 'none';
-          summaryTextElement.textContent = 'Unable to generate summary.';
-          summaryTextElement.style.display = 'block';
+          // Delegate API failure handling to UIUtils
+          UIUtils.handleSummaryFailure(summaryContainer);
         }
       } catch (error) {
-        Logger.error(error.message);
+        Logger.error(`Error inserting summary: ${error.message}`);
       }
     }, this.debounceInterval);
   }
